@@ -5,7 +5,7 @@ import config
 import os
 from dataset import MyTestDataset
 from generator_model import Generator
-from utils import save_test_examples, load_checkpoint
+from utils import save_test_examples, load_checkpoint, visualize_test_examples
 import argparse
 
 def parser():
@@ -16,7 +16,7 @@ def parser():
                         help="path to model weight file. default path:"+f"{os.path.join(config.CHECKPOINT_FOLDER, config.LOAD_CHECKPOINT_GEN)}")
     parser.add_argument("--dest_folder",default=config.RESULT_TEST_DIR,
                         help="path to destination folder for saving images. default path:"+f"{config.RESULT_TEST_DIR}")
-    parser.add_argument("--sample_size", type=int, default= 50,
+    parser.add_argument("--sample_size", type=int, default= 90,
                         help="only inference certain number of images. default=50.")
     parser.add_argument('--shuffle', action='store_true',
                         help="shuffle test data")
@@ -45,6 +45,7 @@ def test_fn(args):
     
     print("=> Saving Test outputs")
     print("="*80)
+    # visualize_test_examples(gen, test_dataset)
     save_test_examples(gen, test_dataset, dest_folder=args.dest_folder, num_samples=args.sample_size, shuffle=shuffle, concat_image=concat_img, post_processing=post_processing)
     print(f"=> Finished inferencing {args.sample_size} images")
     print("="*80)

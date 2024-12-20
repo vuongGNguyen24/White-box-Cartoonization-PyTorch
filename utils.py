@@ -5,7 +5,8 @@ import os
 from torchvision.utils import save_image
 from torch.utils.data import DataLoader
 from surface_extractor import GuidedFilter
-
+import matplotlib.pyplot as plt
+import torchvision.transforms.functional as F
 def save_training_images(image, epoch, step, dest_folder, suffix_filename:str):
     if not os.path.exists(dest_folder):
         os.makedirs(dest_folder)
@@ -40,7 +41,29 @@ def save_val_examples(gen, val_loader, epoch, step, dest_folder, num_samples=1, 
             if(num_saved == num_samples):
                 break
     gen.train()
-
+def to_pil_image(x):
+    realX = x * 0.5 + 0.5
+    realX = realX[0]
+    realX = realX.cpu()
+    realX = F.to_pil_image(realX)
+    return realX
+def visualize_test_examples(gen, test_dataset):
+    
+    test_loader = DataLoader(test_dataset, batch_size=1, shuffle=False, num_workers=config.NUM_WORKERS)
+    with torch.no_grad():
+        x, img_path = next(iter(test_loader))
+        basename = os.path.basename(img_path[0]) # img_path[0]=> unpacking the tuple img_path
+        basename = os.path.splitext(basename)[0]
+        x = x.to(config.DEVICE)
+        yFake = gen(x)
+        fig, ax = plt.subplots(1, 2)
+        ax[0].imshow(to_pil_image(x))
+        ax[0].set_title("Real photo")
+        ax[0].axis("off")
+        ax[1].imshow(to_pil_image(yFake))
+        ax[1].set_title("Cartoonization result")
+        ax[1].axis("off")
+        plt.show()
 def save_test_examples(gen, test_dataset, dest_folder, num_samples=50, shuffle=False, concat_image=False, post_processing=True):
     if not os.path.exists(dest_folder):
         os.makedirs(dest_folder)
@@ -62,7 +85,7 @@ def save_test_examples(gen, test_dataset, dest_folder, num_samples=50, shuffle=F
                 save_image(torch.cat((x * 0.5 + 0.5,y_fake * 0.5 + 0.5), axis=3), os.path.join(dest_folder, f"{basename}_io.png"))
             else:
                 save_image(y_fake * 0.5 + 0.5, os.path.join(dest_folder, f"{basename}_gen.png"))
-                save_image(x * 0.5 + 0.5, os.path.join(dest_folder, f"{basename}.png"))
+                # save_image(x * 0.5 + 0.5, os.path.join(dest_folder, f"{basename}.png"))
 
 
 def save_checkpoint(model, optimizer, epoch, folder, filename="my_checkpoint.pth.tar"):

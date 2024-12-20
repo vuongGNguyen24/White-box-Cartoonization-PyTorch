@@ -22,7 +22,7 @@ CHECKPOINT_GEN = "gen.pth.tar"
 VGG_WEIGHTS = "vgg19-dcbb9e9d.pth"
 
 LOAD_CHECKPOINT_DISC = "i_disc.pth.tar"
-LOAD_CHECKPOINT_GEN = "i_gen.pth.tar"
+LOAD_CHECKPOINT_GEN = "sceneryonly.pth.tar"
 
 RESULT_TRAIN_DIR = os.path.join("results", PROJECT_NAME, "train")
 RESULT_VAL_DIR = os.path.join("results", PROJECT_NAME, "val")
@@ -39,11 +39,11 @@ SAVE_MODEL_FREQ = 5
 #BATCH_SIZE = 16
 #LEARNING_RATE = 2e-4
 #=============================
-BATCH_SIZE = 32
+BATCH_SIZE = 8
 LEARNING_RATE = 2e-4
 PRETRAIN_EPOCHS = 10
-NUM_EPOCHS = 200
-NUM_WORKERS = 8
+NUM_EPOCHS = 20
+NUM_WORKERS = 4
 IMAGE_SIZE = 256
 #=============================
 
